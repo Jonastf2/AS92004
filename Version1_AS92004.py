@@ -1,10 +1,11 @@
-#version 4 Actually finished added every question / answer and added the system to comfirm that you are ready for the next question 
-#comment: yeah i cannot make next quetion good and i need to start on the scoring system next
+#version 5 tried to make scoring system but gave up, added a system to loop random questions until the total of the question numbers you've answered is 210(the sum of 1-20)
+#comment: scoring system next
+#code that are hashtagged are for testing purposes
 import os
 import random
 import time
-import math
 
+SCORE_ADD = 1
 AGE_MAX = 18
 AGE_MIN = 11
 
@@ -96,6 +97,7 @@ def game_intro(): #rules and stuff
     age_check()
     welcome_text()
     print("Welcome to the TF2 quiz, this is a quiz about the 2007 class shooter 'Team Fortress 2' made by valve")
+    print("Here are the rules: \n 1. This is a multi choice quiz, so please answer by using a, b, c or d. \n 2. I reccomend not searching any of the questions up but if you're stuck, please do. ")
     print("this screen will be cleared in 10 seconds.......")
     time.sleep(10)
     clear_text()
@@ -104,29 +106,30 @@ def clear_text(): #easy clear text
       os.system('cls' if os.name == 'nt' else 'clear')
 
 def random_question(): # generates a random question and lets you answer
-    qnum = random.randint(a= 1, b= 20)
+    correct = 0
+    qnum = random.randint(a= 1, b= 20) #generates a random question with a random number 
     while qnum in q_answered: #this makes it so that if the question generated is in the list ,aka already answered it will roll for another one
         qnum = random.randint(a= 1, b= 20)
+        #print("1")
     print(questions[qnum])
     
-    playerans = input("Enter your answer!:").lower().strip()
+    playerans = input("Enter your answer!:").lower().strip() #user answer
 
-    if playerans == answers[qnum]:
+    if playerans == answers[qnum]: #correct
         print("You are correct!!!")
-    else:
+    else: #wrong
         print("You are wrong, \n The correct answer is actually:")
         print(answers[qnum])
     q_answered.append(qnum) #this adds the answered question into the list of answered questions 
-    print(q_answered) #this is just for testing
-    time.sleep(3)
+    #print(q_answered)
     next_question()
     clear_text()
 
 def main(): # main code
-    game_intro()
-    random_question()
-    random_question()
-    random_question()
-    random_question()
-    random_question()
+    #game_intro()
+    while sum(list(q_answered)) != 210: #until the sum of the question numbers of the questions you answered is 210 (which is the sum of 1 to 20) it keeps giving you questions
+        random_question()
+        #print(q_answered)
+        #print(sum(list(q_answered)))
+    print("You have answered every question")
 main()
