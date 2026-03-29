@@ -203,7 +203,7 @@ def main(): #Main gameplay loop
     global amt_answered
     global amt_needed
     global scr_total
-    #game_intro()
+    game_intro()
     while amt_answered != amt_needed:
         random_question()
     print("You have answered every question! \n Your score is:")
