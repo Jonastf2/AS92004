@@ -1,5 +1,5 @@
-#Version 9 Reworded a small amount of questions
-#Comment: Add detection for not answering a,b,c or d
+#Version 10 added detection for not answer a,b,c or d and added diffrent continue_asks
+#Comment:
 import os
 import random
 import time
@@ -7,6 +7,7 @@ import time
 AGE_MAX = 18 #Max age
 AGE_MIN = 11 #Min age
 
+avalable_answers = ["a", "b", "c", "d"]
 amt_needed = 20 #Amount needed to finish quiz
 amt_answered = 0 #How many questions you answered
 scr_total = 0.0 #Your total score
@@ -99,6 +100,15 @@ answers = { #The answers
 def clear_text(): #Easy clear text
       os.system('cls' if os.name == 'nt' else 'clear')
 
+def continue_ask(answer): #Ask if ready to continue
+    ready = input(f"Type {answer} to continue:").lower().strip()
+    if ready == answer:
+        return
+    else:
+        while ready != answer:
+            clear_text()
+            ready = input(f"Type {answer} to continue:").lower().strip()
+
 def game_intro(): #All of the intro compiled into one function
     age_check()
     difficulty()
@@ -106,7 +116,7 @@ def game_intro(): #All of the intro compiled into one function
     clear_text()
     welcome_text()
     rules()
-    continue_ask()
+    continue_ask("i understand")
     clear_text()
 
 def difficulty(): #Difficulty choosing
@@ -134,15 +144,6 @@ def rules(): #The rules
     print("3. correct answers adds 1 to your score and wrong answers takes away 1 from your score.")
     print("4. For questions with [x], you will need to answer what [x] is.")
        
-def continue_ask(): #Ask if ready for the next question
-    ready = input("Type yes to continue:").lower().strip()
-    if ready == "yes":
-        return
-    else:
-        while ready != "yes":
-            clear_text()
-            ready = input("Type yes to continue:").lower().strip()
-    
 def welcome_text(): #Welcome text
       print("""  
   _______ ______ ___                _     
@@ -171,12 +172,28 @@ def age_check(): #In order to see if they're applicable to play
 def drumroll(timer): #Drumroll and duration
     while timer != 0: #Drumroll please
         time.sleep(1)
-        print("...") #For suspense!
+        print(".") #For suspense!
         timer -= 1
 
-def score_change(change_amount): #just to change the score
+def score_change(change_amount): #Just to change the score smh
     global scr_total
     scr_total += change_amount
+
+def question_answering(q_num): #Answer question (question number)
+    playerans = input("Enter your answer!:").lower().strip() #user answer
+    if playerans == answers[q_num]: #Correct answer 
+        print("You are correct!!!") 
+        score_change(1)
+        return
+    else: #Not correct
+        while playerans not in avalable_answers: #Not a,b,c or d
+            playerans = input("Enter your answer!:").lower().strip() #user answer again
+        #vvv wrong answer
+        print("You are wrong, \n The correct answer is actually:") 
+        drumroll(4) 
+        print(f"{answers[q_num]}!!") 
+        score_change(-1)
+        return
 
 def random_question(): #Generates a random question and lets you answer
     global amt_answered
@@ -185,18 +202,10 @@ def random_question(): #Generates a random question and lets you answer
         qnum = random.randint(a= 1, b= 40) #Re generate
     print(f"Question {amt_answered + 1}:")
     print(questions[qnum])
-    playerans = input("Enter your answer!:").lower().strip() #user answer
-    if playerans == answers[qnum]: #Correct answer
-        print("You are correct!!!")
-        score_change(1)
-    else: #Wrong answer
-        print("You are wrong, \n The correct answer is actually:")
-        drumroll(4)
-        print(f"{answers[qnum]}!!")
-        score_change(-1)
+    question_answering(qnum)    
     amt_answered += 1
     qs_answered.append(qnum) #This adds the answered question into the list of answered questions 
-    continue_ask()
+    continue_ask("next")
     clear_text()
 
 def main(): #Main gameplay loop 
@@ -211,3 +220,5 @@ def main(): #Main gameplay loop
     print(f"{scr_total}!!!") #FINAL SCORE!!!!
     
 main()
+
+
